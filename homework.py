@@ -1,4 +1,4 @@
-from typing import Union, Dict, List, ClassVar
+from typing import Union, Dict, List, ClassVar, Type
 from dataclasses import dataclass, asdict
 
 
@@ -25,7 +25,7 @@ class InfoMessage:
 class Training:
     """Базовый класс тренировки."""
 
-    LEN_STEP: float = 0.65  # length of step
+    LEN_STEP: float = 0.65
     M_IN_KM: int = 1000  # meters in kilometer
 
     def __init__(self,
@@ -35,7 +35,6 @@ class Training:
         self.action = action
         self.duration = duration
         self.weight = weight
-        self.training_type: str = self.__class__.__name__
 
     def get_distance(self) -> float:
         """Получить дистанцию в км."""
@@ -53,7 +52,7 @@ class Training:
 
     def show_training_info(self) -> InfoMessage:
         """Вернуть информационное сообщение о выполненной тренировке."""
-        return InfoMessage(self.training_type, self.duration,
+        return InfoMessage(self.__class__.__name__, self.duration,
                            self.get_distance(), self.get_mean_speed(),
                            self.get_spent_calories())
 
@@ -61,8 +60,8 @@ class Training:
 class Running(Training):
     """Тренировка: бег."""
 
-    COEFF_CALORIE_1: float = 18  # calorie coefficient 1
-    COEFF_CALORIE_2: float = 20  # calorie coefficient 2
+    COEFF_CALORIE_1: float = 18.0
+    COEFF_CALORIE_2: float = 20.0
     M_IN_H: int = 60  # minutes in hour
 
     def get_spent_calories(self) -> float:
@@ -74,8 +73,8 @@ class Running(Training):
 class SportsWalking(Training):
     """Тренировка: спортивная ходьба."""
 
-    COEFF_CALORIE_1: float = 0.035  # calorie coefficient 1
-    COEFF_CALORIE_2: float = 0.029  # calorie coefficient 2
+    COEFF_CALORIE_1: float = 0.035
+    COEFF_CALORIE_2: float = 0.029
     M_IN_H: int = 60  # minutes in hour
 
     def __init__(self, action: int, duration: float,
@@ -94,12 +93,12 @@ class SportsWalking(Training):
 class Swimming(Training):
     """Тренировка: плавание."""
     LEN_STEP: float = 1.38  # length of stroke
-    COEFF_CALORIE_1: float = 1.1  # calorie coefficient 1
-    COEFF_CALORIE_2: float = 2  # calorie coefficient 2
+    COEFF_CALORIE_1: float = 1.1
+    COEFF_CALORIE_2: float = 2.0
 
     def __init__(self, action: int, duration: float,
-                 weight: float, length_pool: float, count_pool: int
-                 ) -> None:
+                 weight: float, length_pool: float,
+                 count_pool: int) -> None:
         super().__init__(action, duration, weight)
         self.length_pool = length_pool
         self.count_pool = count_pool
@@ -117,9 +116,9 @@ class Swimming(Training):
 
 def read_package(workout_type: str, data: List[Union[int, float]]) -> Training:
     """Прочитать данные полученные от датчиков."""
-    workout_dict: Dict[str, callable] = {'SWM': Swimming,
-                                         'RUN': Running,
-                                         'WLK': SportsWalking}
+    workout_dict: Dict[str, Type[Training]] = {'SWM': Swimming,
+                                               'RUN': Running,
+                                               'WLK': SportsWalking}
     try:
         return workout_dict[workout_type](*data)
     except KeyError:
