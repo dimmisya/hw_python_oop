@@ -23,10 +23,15 @@ class InfoMessage:
 
 
 class Training:
-    """Базовый класс тренировки."""
+    """Базовый класс тренировки.
+
+    Постоянные класса:
+    LEN_STEP -- длина шага
+    M_IN_KM -- кол-во метров в километре
+    """
 
     LEN_STEP: float = 0.65
-    M_IN_KM: int = 1000  # meters in kilometer
+    M_IN_KM: int = 1000
 
     def __init__(self,
                  action: int,
@@ -58,11 +63,15 @@ class Training:
 
 
 class Running(Training):
-    """Тренировка: бег."""
+    """Тренировка: бег.
+
+    Постоянные класса:
+    M_IN_H -- кол-во минут в часе
+    """
 
     COEFF_CALORIE_1: float = 18.0
     COEFF_CALORIE_2: float = 20.0
-    M_IN_H: int = 60  # minutes in hour
+    M_IN_H: int = 60
 
     def get_spent_calories(self) -> float:
         return ((self.COEFF_CALORIE_1 * self.get_mean_speed()
@@ -71,11 +80,15 @@ class Running(Training):
 
 
 class SportsWalking(Training):
-    """Тренировка: спортивная ходьба."""
+    """Тренировка: спортивная ходьба.
+
+    Постоянные класса:
+    M_IN_H -- кол-во минут в часе
+    """
 
     COEFF_CALORIE_1: float = 0.035
     COEFF_CALORIE_2: float = 0.029
-    M_IN_H: int = 60  # minutes in hour
+    M_IN_H: int = 60
 
     def __init__(self, action: int, duration: float,
                  weight: float, height: int) -> None:
@@ -91,8 +104,12 @@ class SportsWalking(Training):
 
 
 class Swimming(Training):
-    """Тренировка: плавание."""
-    LEN_STEP: float = 1.38  # length of stroke
+    """Тренировка: плавание.
+
+    Постоянные класса:
+    LEN_STEP -- длина гребка
+    """
+    LEN_STEP: float = 1.38
     COEFF_CALORIE_1: float = 1.1
     COEFF_CALORIE_2: float = 2.0
 
